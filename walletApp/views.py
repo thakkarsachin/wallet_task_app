@@ -127,6 +127,7 @@ class EnableWallet(APIView):
             })
 
         wallet.status = "disabled"
+        wallet.disabled_at = timezone.now()
         wallet.save()
 
         data = {
