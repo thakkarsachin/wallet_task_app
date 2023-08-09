@@ -9,7 +9,7 @@ A Wallet Service API for the given assignment - https://documenter.getpostman.co
 * http://localhost/api/v1/wallet/withdrawals - POST (Use virtual money from my wallet)
 * http://localhost/api/v1/wallet - PATCH (Disable my wallet)
 
-## Installation
+## Installation and Running
 
 0. Prerequisites
    * Download and Install Python - https://www.python.org/downloads/release/python-3114/
@@ -39,12 +39,12 @@ A Wallet Service API for the given assignment - https://documenter.getpostman.co
    ```
 4. Do migrate
    ```
+   cd wallet_task_app
    python manage.py makemigrations
    python manage.py migrate
    ```
 5. In a terminal go to path where `manage.py` is located and run below script to add data
    ```
-   cd PATH_TO_MANAGE.PY
    python manage.py shell
    ```
    ``` python
@@ -52,9 +52,57 @@ A Wallet Service API for the given assignment - https://documenter.getpostman.co
    >>> models.Customer.objects.create(id="wefq324-ver-324fa-ff4f32")
    >>> models.Customer.objects.create(id="3dfvgd-gh4j3bhj-bhd347")
    >>> models.Customer.objects.create(id="sca4c-sdvb5-cfe63")
+   >>> exit()
    ```
 6. Now run the application
    ```
    python manage.py runserver
    ```
-   
+
+## Testing APIs
+
+### 1. Init Wallet (generate token)
+```
+curl --location 'http://localhost:8000/api/v1/init/' --form 'customer_xid="wefq324-ver-324fa-ff4f32"'
+```
+
+### 2. Enable Wallet
+```
+curl --location --request POST 'http://localhost:8000/api/v1/wallet/' \
+--header 'Authorization: Token 79e599598a03220f9f2a7dade11e4bdbf6478ed2'
+```
+
+### 3. View wallet balance
+```
+curl --location 'http://localhost:8000/api/v1/wallet/' \
+--header 'Authorization: Token 79e599598a03220f9f2a7dade11e4bdbf6478ed2'
+```
+
+### 4. View wallet transactions
+```
+curl --location "http://localhost:8000/api/v1/wallet/transactions" \
+--header 'Authorization: Token 79e599598a03220f9f2a7dade11e4bdbf6478ed2'
+```
+
+### 5. Add virtual money to wallet
+```
+curl --location 'http://localhost:8000/api/v1/wallet/deposits/' \
+--header 'Authorization: Token 79e599598a03220f9f2a7dade11e4bdbf6478ed2' \
+--form 'amount="100000"' \
+--form 'reference_id="50535246-dcb2-4929-8cc9-004ea06f5241"'
+```
+
+### 6. Use virtual money from wallet
+```
+curl --location 'http://localhost:8000/api/v1/wallet/withdrawals/' \
+--header 'Authorization: Token 79e599598a03220f9f2a7dade11e4bdbf6478ed2' \
+--form 'amount="100"' \
+--form 'reference_id="50535246-dcb2-4929gde63d-004ea06f5241"'
+```
+
+### 7. Disable my wallet
+```
+curl --location --request PATCH 'http://localhost:8000/api/v1/wallet/' \
+--header 'Authorization: Token 79e599598a03220f9f2a7dade11e4bdbf6478ed2' \
+--form 'is_disabled="true"'
+```
